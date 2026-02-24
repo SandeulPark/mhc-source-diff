@@ -13,6 +13,7 @@ This repo holds deployment artifacts, not source code:
 - `classes/` — Primary compiled Java classes (`kr/go/mhc/`)
 - `WAS/jeus/mhcweb/WEB-INF/classes/` — JEUS deployment copy of the same classes
 - Timestamped backup files (e.g., `*.class_20251124`) are manual version snapshots
+- `AGENTS/` — Claude Code 에이전트 정의 (컴파일 등 반복 작업 자동화)
 
 ## Architecture
 
@@ -76,3 +77,5 @@ Each module follows this Spring MVC + eGov pattern consistently. Controllers han
 ## 작업 규칙
 - 작업이 완료되면 문서 업데이트가 필요한 부분이 있는지 확인해서 제안을 요청한다.
 - scripts/gen_excel.py 실행 시 `uv run --with openpyxl python3 scripts/gen_excel.py {디렉터리}`로 실행한다.
+- 컴파일이 필요한 경우 `AGENTS/compile.md`를 참조하여 절차를 따른다.
+- 에이전트 절차 실행 중 절차서에 없는 문제가 발생하면, 문제 해결 전에 해당 에이전트 문서를 먼저 업데이트한다.

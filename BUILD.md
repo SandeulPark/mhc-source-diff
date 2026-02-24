@@ -104,6 +104,40 @@ MAVEN_OPTS="-Dhttps.protocols=TLSv1.2" \
 > </dependency>
 > ```
 
+#### mhcapp, smhcapp 상용 라이브러리
+
+mhcapp, smhcapp은 보안/인증 관련 상용 라이브러리를 사용합니다. 각 프로젝트의 `src/main/webapp/WEB-INF/lib/`에 있는 JAR 파일을 로컬 저장소에 설치합니다.
+
+```bash
+cd mhcapp
+
+JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.7.0_80.jdk/Contents/Home \
+MAVEN_OPTS="-Dhttps.protocols=TLSv1.2" \
+MVN=~/tools/apache-maven-3.2.5/bin/mvn
+
+LIB=src/main/webapp/WEB-INF/lib
+
+# DreamSecurity DSToolkit (암호화)
+$MVN install:install-file -DgroupId=com.dreamsecurity -DartifactId=dstoolkit -Dversion=3.4.2.0 -Dpackaging=jar -Dfile=$LIB/DSToolkit-v3.4.2.0.jar
+
+# DreamSecurity MagicKeyPad (보안 키패드)
+$MVN install:install-file -DgroupId=com.dreamsecurity -DartifactId=magickeypad -Dversion=1.0.1.0 -Dpackaging=jar -Dfile=$LIB/MagicKeypadSever_1.0.1.0.jar
+
+# Extrus eXafe (E2E 암호화)
+$MVN install:install-file -DgroupId=com.extrus -DartifactId=exafe-common -Dversion=1.0.1 -Dpackaging=jar -Dfile=$LIB/exafe-common-1.0.1.jar
+$MVN install:install-file -DgroupId=com.extrus -DartifactId=exafe-e2e -Dversion=1.0.0 -Dpackaging=jar -Dfile=$LIB/exafe-e2e-server1.0.0.jar
+
+# Initech INICrypto (전자서명)
+$MVN install:install-file -DgroupId=com.initech -DartifactId=INICrypto -Dversion=4.1.7 -Dpackaging=jar -Dfile=$LIB/INICrypto_v4.1.7.jar
+
+# NICE 본인인증
+$MVN install:install-file -DgroupId=NiceID -DartifactId=NiceID -Dversion=1.0 -Dpackaging=jar -Dfile=$LIB/NiceID.jar
+```
+
+> **참고**: mhcapp의 `pom.xml`에는 원래 이 의존성들이 주석 처리되어 있거나 누락되어 있어 수동으로 추가해야 합니다. metadata-extractor와 json-simple은 Maven Central에서 자동 다운로드됩니다.
+
+> **참고**: smhcapp도 동일한 상용 라이브러리를 사용합니다. smhcapp의 `pom.xml`에는 `${basedir}` 기반 system scope로 설정되어 있으므로 별도 로컬 저장소 설치 없이 컴파일 가능합니다. 단, ojdbc7은 원래 Windows systemPath(`C:/repositoryEgo/...`)로 되어 있어 로컬 Maven 저장소(12.1.0.2)를 사용하도록 수정해야 합니다.
+
 ## 컴파일
 
 ### 공통 컴파일 명령
@@ -140,6 +174,36 @@ MAVEN_OPTS="-Dhttps.protocols=TLSv1.2" \
 ```
 
 - **출력 경로**: `smhcweb/target/classes/`
+- **타겟 버전**: Java 1.7 (class major version 51)
+
+### mhcapp
+
+상용 라이브러리 사전 설치 필요 (위 [mhcapp, smhcapp 상용 라이브러리](#mhcapp-smhcapp-상용-라이브러리) 참조).
+
+```bash
+cd mhcapp
+
+JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.7.0_80.jdk/Contents/Home \
+MAVEN_OPTS="-Dhttps.protocols=TLSv1.2" \
+~/tools/apache-maven-3.2.5/bin/mvn compile
+```
+
+- **출력 경로**: `mhcapp/target/classes/`
+- **타겟 버전**: Java 1.7 (class major version 51)
+
+### smhcapp
+
+상용 라이브러리는 `pom.xml`에 system scope로 설정되어 별도 설치 불필요. ojdbc7은 로컬 Maven 저장소 사용 (위 [Oracle JDBC 드라이버](#oracle-jdbc-드라이버-ojdbc7) 참조).
+
+```bash
+cd smhcapp
+
+JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.7.0_80.jdk/Contents/Home \
+MAVEN_OPTS="-Dhttps.protocols=TLSv1.2" \
+~/tools/apache-maven-3.2.5/bin/mvn compile
+```
+
+- **출력 경로**: `smhcapp/target/classes/`
 - **타겟 버전**: Java 1.7 (class major version 51)
 
 ## MAVEN_OPTS 설명
