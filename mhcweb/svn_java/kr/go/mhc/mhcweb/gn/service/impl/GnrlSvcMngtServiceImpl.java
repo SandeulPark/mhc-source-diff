@@ -1,0 +1,139 @@
+package kr.go.mhc.mhcweb.gn.service.impl;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
+import egovframework.rte.fdl.cmmn.EgovAbstractServiceImpl;
+import kr.go.mhc.mhcweb.gn.service.GnrlSvcMngtService;
+
+/**
+ * @Class Name :SvcMngtServiceImpl.java
+ * @Description : 관리자 WEB에서 사용하는 건강정보관리에 필요한 DAO와 연동 관리하는 Class
+ * @Modification Information
+ * @
+ * @	수정일				수정자			수정내용
+ * @	----------		----		---------------------------
+ * @	2016.08.08		이태석			최초생성
+ *
+ * @author gst
+ * @since 2016.08.08
+ * @version 1.0
+ * @see
+ *
+ *  Copyright (C) by Mobile Health Care All right reserved.
+ */
+
+@Service("web.gn.GnrlSvcMngtService")
+public class GnrlSvcMngtServiceImpl extends EgovAbstractServiceImpl implements GnrlSvcMngtService{
+	
+	@Resource(name="web.gn.GnrlSvcMngtDAO")
+	private GnrlSvcMngtDAO gnrlSvcMngtDAO;
+
+	@Override
+	public int getHealthInfoMngtListCount(Map<String, Object> param) throws Exception {
+		return gnrlSvcMngtDAO.getHealthInfoMngtListCount(param);
+	}
+
+	@Override
+	public List<Map<String, String>> getHealthInfoMngtList(Map<String, Object> param) throws Exception {
+		return gnrlSvcMngtDAO.getHealthInfoMngtList(param);
+	}
+	
+	public Map<String, Object> getHealthInfoDtls(Map<String, Object> param) throws Exception {		
+		return gnrlSvcMngtDAO.getHealthInfoDtls(param);  
+	}
+
+	@Override
+	public List<Map<String, String>> getCmntyGroupList(Map<String, Object> param) throws Exception {
+		return gnrlSvcMngtDAO.getCmntyGroupList(param);
+	}
+	
+	@Override
+	public List<Map<String, String>> getAllCmntyGroupList(Map<String, Object> param) throws Exception {
+		return gnrlSvcMngtDAO.getAllCmntyGroupList(param);
+	}
+	
+	@Override
+	public List<Map<String, String>> getHealthInfoCmmntList(Map<String, Object> param) throws Exception {
+		return gnrlSvcMngtDAO.getHealthInfoCmmntList(param);
+	}
+	
+	@Override
+	public List<Map<String, String>> getHealthInfoCmmntAttchList(Map<String, Object> param) throws Exception {
+		return gnrlSvcMngtDAO.getHealthInfoCmmntList(param);
+	}
+
+	@Override
+	public List<Map<String, String>> getHealthInfoGoodList(Map<String, Object> param) throws Exception {
+		return gnrlSvcMngtDAO.getHealthInfoGoodList(param);
+	}
+
+	@Override
+	public void getHealthInfoDtlsUpdate(Map<String, Object> param) throws Exception {
+		gnrlSvcMngtDAO.getHealthInfoDtlsUpdate(param);
+	}
+	
+	@Override
+	public void getHealthInfoReCmmntInsert(Map<String, Object> param) throws Exception {		
+		gnrlSvcMngtDAO.getHealthInfoReCmmntInsert(param);
+	}
+
+	@Override
+	public void getnewHealthInfoInsert(Map<String, Object> param) throws Exception {
+		gnrlSvcMngtDAO.getnewHealthInfoInsert(param);
+	}
+
+	@Override
+	public void gethealthInfoReCmmntDelete(Map<String, Object> param) throws Exception {
+		gnrlSvcMngtDAO.gethealthInfoReCmmntDelete(param);
+	}
+
+	@Override
+	public List<Map<String, String>> getSelectAttchFileList(Map<String, Object> param) throws Exception {
+		// TODO Auto-generated method stub
+		return gnrlSvcMngtDAO.getSelectAttchFileList(param);
+	}
+
+	@Override
+	public void updateArticlePostClf(Map<String, Object> param) throws Exception {
+		gnrlSvcMngtDAO.updateArticlePostClf(param);
+	}
+	
+	@Override
+	public void getHealthInfoCmmntInsert(Map<String, Object> param) throws Exception {		
+		gnrlSvcMngtDAO.getHealthInfoCmmntInsert(param);
+	}
+	
+	@Override
+	public void healthInfoDtlsDelete(Map<String,Object> param) throws Exception{
+		gnrlSvcMngtDAO.healthInfoDtlsDelete(param);
+	}
+	
+	/**
+	 * 댓글 목록 수 조회
+	 * @param
+	 * @return
+	 * @throws Exception
+	 */
+	@Override
+	public int getReCnt(Map<String, Object> param) throws Exception {
+		// TODO Auto-generated method stub
+		return gnrlSvcMngtDAO.getReCnt(param);
+	}
+	
+	/**
+	 * 좋아요 목록 수 조회
+	 * @param
+	 * @return
+	 * @throws Exception
+	 */
+	@Override
+	public int getGoodCnt(Map<String, Object> param) throws Exception {
+		// TODO Auto-generated method stub
+		return gnrlSvcMngtDAO.getGoodCnt(param);
+	}
+}
