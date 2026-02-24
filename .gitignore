@@ -2,3 +2,5 @@
 .omc/
 .idea
 .svn
+.target
+.venv

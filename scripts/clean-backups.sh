@@ -71,11 +71,20 @@ fi
 find_backups() {
     local path="$TARGET_DIR"
     if [ -n "$MODULE" ]; then
-        path="$TARGET_DIR/kr/go/mhc/mhcweb/$MODULE"
-        if [ ! -d "$path" ]; then
-            echo -e "${RED}오류: 모듈 디렉토리가 없습니다: $path${NC}"
+        # mhcweb 또는 mhcapp 하위에서 모듈 디렉토리 자동탐지
+        local found=""
+        for area in mhcweb mhcapp; do
+            local candidate="$TARGET_DIR/kr/go/mhc/$area/$MODULE"
+            if [ -d "$candidate" ]; then
+                found="$candidate"
+                break
+            fi
+        done
+        if [ -z "$found" ]; then
+            echo -e "${RED}오류: 모듈 디렉토리를 찾을 수 없습니다: kr/go/mhc/{mhcweb,mhcapp}/$MODULE${NC}"
             exit 1
         fi
+        path="$found"
     fi
     {
         find "$path" -name "*.class_*" -type f
@@ -146,7 +155,7 @@ compute_targets() {
         # 해당 원본의 백업 파일들 (모든 패턴 매칭)
         local base="${original%.class}"
         local backups
-        backups=$(grep -F "$base" "$tmp_all" | grep -v "^${original}$" || true)
+        backups=$({ grep -F "${base}.class" "$tmp_all" || true; grep -F "${base}_" "$tmp_all" || true; } | sort -u | grep -v "^${original}$" || true)
         [ -z "$backups" ] && continue
 
         # --before 필터 적용
@@ -220,7 +229,7 @@ compute_targets() {
         local deleted=0
         while IFS= read -r f; do
             [ -z "$f" ] && continue
-            rm "$f"
+            rm -f "$f"
             deleted=$((deleted + 1))
         done < "$tmp_delete"
         echo -e "${GREEN}완료: ${deleted}개 파일 삭제됨${NC}"

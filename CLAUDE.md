@@ -72,3 +72,7 @@ Each module follows this Spring MVC + eGov pattern consistently. Controllers han
 - eGov Framework base classes: `EgovAbstractMapper`, `EgovComExcepHndlr`
 - Module structure is consistent: each module has `controller/`, `service/`, `service/impl/` subdirectories
 - Backup versioning uses filename suffix pattern: `ClassName.class_YYYYMMDD`
+
+## 작업 규칙
+- 작업이 완료되면 문서 업데이트가 필요한 부분이 있는지 확인해서 제안을 요청한다.
+- scripts/gen_excel.py 실행 시 `uv run --with openpyxl python3 scripts/gen_excel.py {디렉터리}`로 실행한다.

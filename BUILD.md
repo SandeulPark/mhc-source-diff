@@ -69,8 +69,22 @@ MAVEN_OPTS="-Dhttps.protocols=TLSv1.2" \
 #### crosscert 공인인증서 라이브러리
 
 각 프로젝트의 `src/main/webapp/WEB-INF/lib/crosscert_2.2.jar`를 사용합니다.
+mhcweb, smhcweb 각각의 디렉토리에서 실행해야 합니다.
 
 ```bash
+# mhcweb
+cd mhcweb
+JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.7.0_80.jdk/Contents/Home \
+MAVEN_OPTS="-Dhttps.protocols=TLSv1.2" \
+~/tools/apache-maven-3.2.5/bin/mvn install:install-file \
+  -DgroupId=crosscert \
+  -DartifactId=crosscert \
+  -Dversion=2.2 \
+  -Dpackaging=jar \
+  -Dfile=src/main/webapp/WEB-INF/lib/crosscert_2.2.jar
+
+# smhcweb
+cd ../smhcweb
 JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.7.0_80.jdk/Contents/Home \
 MAVEN_OPTS="-Dhttps.protocols=TLSv1.2" \
 ~/tools/apache-maven-3.2.5/bin/mvn install:install-file \
@@ -80,6 +94,15 @@ MAVEN_OPTS="-Dhttps.protocols=TLSv1.2" \
   -Dpackaging=jar \
   -Dfile=src/main/webapp/WEB-INF/lib/crosscert_2.2.jar
 ```
+
+> **참고**: smhcweb의 `pom.xml`에는 원래 crosscert 의존성이 누락되어 있어 수동으로 추가해야 합니다. 아래 내용을 `<dependencies>` 안에 추가하세요:
+> ```xml
+> <dependency>
+>     <groupId>crosscert</groupId>
+>     <artifactId>crosscert</artifactId>
+>     <version>2.2</version>
+> </dependency>
+> ```
 
 ## 컴파일
 
