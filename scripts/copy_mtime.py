@@ -4,7 +4,9 @@
 컴파일하면 .class의 mtime이 컴파일 시점으로 설정되므로,
 SVN checkout된 .java의 커밋 시간을 .class에 복사하여 정확한 비교를 가능하게 한다.
 
-사용법: python scripts/copy_mtime.py {project}
+사용법: python scripts/copy_mtime.py {project} [target_subdir]
+  target_subdir: 타겟 서브디렉토리 (기본값: target/classes)
+  예) python scripts/copy_mtime.py mhcapp svn
 """
 
 import os
@@ -12,10 +14,10 @@ import sys
 from pathlib import Path
 
 
-def copy_mtime(project_dir: str) -> None:
+def copy_mtime(project_dir: str, target_subdir: str = "target/classes") -> None:
     project = Path(project_dir)
     src_root = project / "src" / "main" / "java"
-    target_root = project / "target" / "classes"
+    target_root = project / target_subdir
 
     if not src_root.is_dir():
         print(f"소스 디렉토리 없음: {src_root}")
@@ -64,7 +66,8 @@ def copy_mtime(project_dir: str) -> None:
 
 
 if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print("사용법: python scripts/copy_mtime.py {project}")
+    if len(sys.argv) < 2 or len(sys.argv) > 3:
+        print("사용법: python scripts/copy_mtime.py {project} [target_subdir]")
         sys.exit(1)
-    copy_mtime(sys.argv[1])
+    target_subdir = sys.argv[2] if len(sys.argv) == 3 else "target/classes"
+    copy_mtime(sys.argv[1], target_subdir)

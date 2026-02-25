@@ -8,7 +8,7 @@
       - mhcweb: svn checkout --config-option config:miscellany:use-commit-times=yes svn://127.0.0.1:13690/mhcweb/src/main/java "mhcweb/svn_java"
       - smhcapp: svn checkout --config-option config:miscellany:use-commit-times=yes svn://127.0.0.1:13690/smhcapp/src/main/java "smhcapp/svn_java"
       - mhcapp: svn checkout --config-option config:miscellany:use-commit-times=yes svn://127.0.0.1:13690/mhcapp/src/main/java "mhcapp/svn_java"
-  - 컴파일
+  - 컴파일 (cluade 요청. AGENTS에 정의했음.)
     - Java 1.7 설치
     - Maven 3.2.5 설치
     - pom.xml만 있으면 된다.
@@ -17,21 +17,22 @@
 - PRD 소스
   - 원격 서버 파일 가져오기
     - 압축: 
-      - smhcweb: zip -r $HOME/smhc_web_sources_$(date +%Y%m%d).zip /WAS/jeus/smhcweb/WEB-INF/classes/kr
-      - mhcweb: zip -r $HOME/mhc_web_sources_$(date +%Y%m%d).zip /WAS/jeus/mhcweb/WEB-INF/classes/kr
-      - smhcapp: zip -r $HOME/smhc_app_sources_$(date +%Y%m%d).zip /WAS/jeus/smhcapp/WEB-INF/classes/kr
-      - mhcapp: zip -r $HOME/mhc_app_sources_$(date +%Y%m%d).zip /WAS/jeus/mhcapp/WEB-INF/classes/kr
+      - smhcweb: zip -r $HOME/sources_zip/smhc_web_sources_$(date +%Y%m%d).zip /WAS/jeus/smhcweb/WEB-INF/classes/kr
+      - mhcweb: zip -r $HOME/sources_zip/mhc_web_sources_$(date +%Y%m%d).zip /WAS/jeus/mhcweb/WEB-INF/classes/kr
+      - smhcapp: zip -r $HOME/sources_zip/smhc_app_sources_$(date +%Y%m%d).zip /WAS/jeus/smhcapp/WEB-INF/classes/kr
+      - mhcapp: zip -r $HOME/sources_zip/mhc_app_sources_$(date +%Y%m%d).zip /WAS/jeus/mhcapp/WEB-INF/classes/kr
     - 이동: 
-      - smhcweb: scp -P 13522 jeus@localhost:/home/jeus/smhc-web-sources .
-      - mhcweb: scp -P 13522 jeus@localhost:/home/jeus/mhc-web-sources .
-      - smhcapp: scp -P 13522 jeus@localhost:/home/jeus/smhc-app-sources .
-      - mhcapp: scp -P 13522 jeus@localhost:/home/jeus/mhc-app-sources .
-  - scripts/clean-backups.sh 실행해서 백업 파일 제거. (파일에 실행 방법 있음.)
+      - smhcweb: scp -P 13522 jeus@localhost:/home/jeus/sources_zip/smhc-web-sources .
+      - mhcweb: scp -P 13522 jeus@localhost:/home/jeus/sources_zip/mhc-web-sources .
+      - smhcapp: scp -P 13522 jeus@localhost:/home/jeus/sources_zip/smhc-app-sources .
+      - mhcapp: scp -P 13522 jeus@localhost:/home/jeus/sources_zip/mhc-app-sources .
+  - scripts/clean-backups.sh 실행해서 백업 파일 제거. (파일에 실행 방법 있음.) (에이전트)
 
 - 공통
   - 파일의 최종수정일시는 github에 올리면 사라지기 때문에 scripts/save_mtime.py로 파일로 만들어둔다.
-    - prd: python scripts/save_mtime.py smhcweb prd
-    - svn: python scripts/save_mtime.py smhcweb svn
+    - prd: python3 scripts/save_mtime.py smhcweb prd
+    - svn: python3 scripts/save_mtime.py smhcweb svn
+    - 한 번에 실행: python3 scripts/save_mtime.py smhcweb prd; python3 scripts/save_mtime.py smhcweb svn
   - scripts/gen_excel.py로 prd, svn .class를 비교 정리한 엑셀 파일 생성. 
     - smhcweb: `uv run --with openpyxl python3 scripts/gen_excel.py smhcweb` 
     - mhcweb: `uv run --with openpyxl python3 scripts/gen_excel.py mhcweb`

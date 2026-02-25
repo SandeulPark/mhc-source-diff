@@ -86,16 +86,19 @@ find_backups() {
         fi
         path="$found"
     fi
-    {
-        find "$path" -name "*.class_*" -type f
-        find "$path" -name "*_[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9].class" -type f
-        find "$path" -name "*.class[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]" -type f
-        find "$path" -type f | grep -E '_[0-9]{8}$' | grep -v '\.class' || true
-    } | sort -u
+    find "$path" -type f ! -name "*.class" ! -name ".DS_Store" | sort
 }
 
 # 날짜 추출 (파일명에서 YYYYMMDD 부분)
 extract_date() {
+    # 먼저 YYYY-MM-DD 또는 YYYY_MM_DD 시도 → YYYYMMDD로 변환
+    local sep_date
+    sep_date=$(echo "$1" | grep -oE '[0-9]{4}[-_][0-9]{2}[-_][0-9]{2}' | tail -1 | tr -d '_-')
+    if [ -n "$sep_date" ]; then
+        echo "$sep_date"
+        return
+    fi
+    # fallback: 기존 YYYYMMDD
     echo "$1" | grep -oE '[0-9]{8}' | tail -1
 }
 
@@ -147,7 +150,12 @@ compute_targets() {
     # 패턴2: Foo_20210209.class -> Foo.class
     # 패턴3: Foo.class20200629 -> Foo.class
     # 패턴4: Foo_20220616 -> Foo.class (확장자 없음)
-    sed -e 's/\.class_.*/\.class/' -e 's/_[0-9]\{8\}\.class$/.class/' -e 's/\.class[0-9]\{8\}$/.class/' -e 's/_[0-9]\{8\}$/.class/' "$tmp_all" | sort -u > "$tmp_orig"
+    sed -e 's/\.class_.*/\.class/' \
+        -e 's/_[0-9]\{8\}\.class$/.class/' \
+        -e 's/\.class[0-9]\{8\}$/.class/' \
+        -e 's/_[0-9]\{8\}$/.class/' \
+        -e 's/\.class[0-9]\{4\}[-_][0-9]\{2\}[-_][0-9]\{2\}$/.class/' \
+        "$tmp_all" | sort -u > "$tmp_orig"
 
     while IFS= read -r original; do
         [ -z "$original" ] && continue

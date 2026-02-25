@@ -97,6 +97,57 @@ rm -rf {project}/target
 - ojdbc7: `BUILD.md` > Oracle JDBC 드라이버 설치 절차 참조
 - crosscert: `BUILD.md` > crosscert 설치 절차 참조. 프로젝트의 `src/main/webapp/WEB-INF/lib/crosscert_2.2.jar`를 로컬 저장소에 설치
 
+### smhcapp 의존성 오류
+
+smhcapp의 `pom.xml`은 원래 Windows 환경 기준으로 작성되어 있어 macOS에서 아래 오류가 발생할 수 있다.
+
+#### ojdbc7 systemPath 오류
+
+`'dependencies.dependency.systemPath' for com.oracle:ojdbc7:jar must specify an absolute path but is C:/repositoryEgo/...` 발생 시:
+
+ojdbc7 의존성에서 Windows systemPath를 제거하고 로컬 Maven 저장소를 사용하도록 수정한다:
+
+```xml
+<!-- 수정 전 (Windows systemPath) -->
+<dependency>
+    <groupId>com.oracle</groupId>
+    <artifactId>ojdbc7</artifactId>
+    <version>12.1.0.1</version>
+    <scope>system</scope>
+    <systemPath>C:/repositoryEgo/com/oracle/ojdbc7/12.1.0.1/ojdbc7-12.1.0.1.jar</systemPath>
+</dependency>
+
+<!-- 수정 후 (로컬 Maven 저장소) -->
+<dependency>
+    <groupId>com.oracle</groupId>
+    <artifactId>ojdbc7</artifactId>
+    <version>12.1.0.2</version>
+</dependency>
+```
+
+#### 보안 라이브러리 누락
+
+`package com.dreamsecurity.magicvkeypad does not exist` 또는 `package com.extrus.exafe.e2e.api does not exist` 발생 시:
+
+`pom.xml`에 아래 system scope 의존성을 추가한다:
+
+```xml
+<dependency>
+    <groupId>com.dreamsecurity</groupId>
+    <artifactId>MagicVKeypadServer</artifactId>
+    <version>1.2.2</version>
+    <scope>system</scope>
+    <systemPath>${basedir}/src/main/webapp/WEB-INF/lib/MagicVKeypadSever_1.2.2_target1.7.jar</systemPath>
+</dependency>
+<dependency>
+    <groupId>com.extrus</groupId>
+    <artifactId>exafe-e2e-server</artifactId>
+    <version>1.0.6</version>
+    <scope>system</scope>
+    <systemPath>${basedir}/src/main/webapp/WEB-INF/lib/exafe-e2e-server1.0.6.jar</systemPath>
+</dependency>
+```
+
 ### egovframe.go.kr 저장소 불안정
 
 `Could not transfer artifact from/to egovframe` 발생 시:
