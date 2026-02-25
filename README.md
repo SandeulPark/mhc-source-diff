@@ -1,46 +1,71 @@
-# 보건소 소스 비교 (PRD vs SVN)
+# 보건소 채움건강 소스 비교 (PRD vs SVN)
 
+보건소 채움건강 4개 프로젝트의 **운영(prd) 서버 클래스 파일**과 **SVN 클래스 파일**을 비교하여 정합성을 분석하는 저장소.
 
-- SVN 소스
-  - SVN Checkout
-    - 커밋 일시 가져오기 
-      - smhcweb: svn checkout --config-option config:miscellany:use-commit-times=yes svn://127.0.0.1:13690/smhcweb/src/main/java "smhcweb/svn_java"
-      - mhcweb: svn checkout --config-option config:miscellany:use-commit-times=yes svn://127.0.0.1:13690/mhcweb/src/main/java "mhcweb/svn_java"
-      - smhcapp: svn checkout --config-option config:miscellany:use-commit-times=yes svn://127.0.0.1:13690/smhcapp/src/main/java "smhcapp/svn_java"
-      - mhcapp: svn checkout --config-option config:miscellany:use-commit-times=yes svn://127.0.0.1:13690/mhcapp/src/main/java "mhcapp/svn_java"
-  - 컴파일 (cluade 요청. AGENTS에 정의했음.)
-    - Java 1.7 설치
-    - Maven 3.2.5 설치
-    - pom.xml만 있으면 된다.
-  - 컴파일하면 target/classes에 class 파일들이 생성된다. mtime이 컴파일 된 시점이기 때문에 .java 파일에서 복사해와야 한다. `claude 요청`
+## 대상 프로젝트
 
-- PRD 소스
-  - 원격 서버 파일 가져오기
-    - 압축: 
-      - smhcweb: zip -r $HOME/sources_zip/smhc_web_sources_$(date +%Y%m%d).zip /WAS/jeus/smhcweb/WEB-INF/classes/kr
-      - mhcweb: zip -r $HOME/sources_zip/mhc_web_sources_$(date +%Y%m%d).zip /WAS/jeus/mhcweb/WEB-INF/classes/kr
-      - smhcapp: zip -r $HOME/sources_zip/smhc_app_sources_$(date +%Y%m%d).zip /WAS/jeus/smhcapp/WEB-INF/classes/kr
-      - mhcapp: zip -r $HOME/sources_zip/mhc_app_sources_$(date +%Y%m%d).zip /WAS/jeus/mhcapp/WEB-INF/classes/kr
-    - 이동: 
-      - smhcweb: scp -P 13522 jeus@localhost:/home/jeus/sources_zip/smhc-web-sources .
-      - mhcweb: scp -P 13522 jeus@localhost:/home/jeus/sources_zip/mhc-web-sources .
-      - smhcapp: scp -P 13522 jeus@localhost:/home/jeus/sources_zip/smhc-app-sources .
-      - mhcapp: scp -P 13522 jeus@localhost:/home/jeus/sources_zip/mhc-app-sources .
-  - scripts/clean-backups.sh 실행해서 백업 파일 제거. (파일에 실행 방법 있음.) (에이전트)
+| 디렉터리 | 프로젝트 | 설명 |
+|----------|----------|------|
+| `mhcweb/` | 채움건강 웹 | 웹 포털 (488건) |
+| `mhcapp/` | 채움건강 앱 | 모바일 앱 백엔드 (145건) |
+| `smhcweb/` | 오늘건강 웹 | 스마트 웹 포털 (187건) |
+| `smhcapp/` | 오늘건강 앱 | 스마트 앱 백엔드 (91건) |
 
-- 공통
-  - 파일의 최종수정일시는 github에 올리면 사라지기 때문에 scripts/save_mtime.py로 파일로 만들어둔다.
-    - prd: python3 scripts/save_mtime.py smhcweb prd
-    - svn: python3 scripts/save_mtime.py smhcweb svn
-    - 한 번에 실행: python3 scripts/save_mtime.py smhcweb prd; python3 scripts/save_mtime.py smhcweb svn
-  - scripts/gen_excel.py로 prd, svn .class를 비교 정리한 엑셀 파일 생성. 
-    - smhcweb: `uv run --with openpyxl python3 scripts/gen_excel.py smhcweb` 
-    - mhcweb: `uv run --with openpyxl python3 scripts/gen_excel.py mhcweb`
-    - smhcapp: `uv run --with openpyxl python3 scripts/gen_excel.py smhcapp`
-    - mhcapp: `uv run --with openpyxl python3 scripts/gen_excel.py mhcapp`
+각 프로젝트 디렉터리 내부 구조:
 
+```
+{project}/
+├── prd/              # 운영 서버 클래스 파일
+├── svn/              # SVN 클래스 파일
+├── svn_java/         # SVN Java 소스 (있는 경우)
+├── prd_mtime.json    # prd 파일 수정시간 기록
+├── svn_mtime.json    # svn 파일 수정시간 기록
+└── classes_comparison.xlsx  # 비교 결과 엑셀
+```
 
+## 산출물
 
-- 이슈
-  - 1.6으로 컴파일 된 파일이 있다. 일부 파일 중에 java 6으로 컴파일 된 파일이 있다. 
-  
+| 파일 | 설명 |
+|------|------|
+| `{project}/classes_comparison.xlsx` | 프로젝트별 파일 단위 상세 비교 (상태, 크기, JDK 버전, 최신 버전 위치) |
+| `현황_260225.md` | 4개 프로젝트 전체 비교 현황 요약 |
+
+## 사용법
+
+### 비교 엑셀 생성
+
+```bash
+uv run --with openpyxl python3 scripts/gen_excel.py {프로젝트 디렉터리}
+```
+
+예시:
+```bash
+uv run --with openpyxl python3 scripts/gen_excel.py mhcweb
+```
+
+### 기타 스크립트
+
+| 스크립트 | 용도 |
+|---------|------|
+| `scripts/gen_excel.py` | prd/svn 클래스 비교 후 엑셀 생성 |
+| `scripts/save_mtime.py` | 파일 수정시간 JSON 저장 |
+| `scripts/copy_mtime.py` | 저장된 수정시간 복원 |
+| `scripts/clean-backups.sh` | 백업 파일(`*.class_YYYYMMDD`) 정리 |
+
+## 비교 결과 요약 (2026-02-25)
+
+| 비교상태 | mhcweb | mhcapp | smhcweb | smhcapp | 합계 |
+|----------|-------:|-------:|--------:|--------:|-----:|
+| 변경없음 | 320 | 76 | 104 | 44 | **544** |
+| 코드변경 | 121 | 69 | 83 | 45 | **318** |
+| SVN에만 존재 | 39 | 0 | 0 | 0 | **39** |
+| prd에만 존재 | 8 | 0 | 0 | 2 | **10** |
+| **합계** | **488** | **145** | **187** | **91** | **911** |
+
+전체 911건 중 59.7%가 변경 없음, 34.9%가 코드 변경. 상세 분석은 [`현황_260225.md`](현황_260225.md) 참조.
+
+## 관련 문서
+
+- [`CLAUDE.md`](CLAUDE.md) — Claude Code 작업 가이드
+- [`AGENTS/`](AGENTS/) — 에이전트 정의 (컴파일, 백업 정리 등)
+- [`workflow.md`](workflow.md) — 작업 흐름
