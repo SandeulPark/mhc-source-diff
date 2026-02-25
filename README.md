@@ -64,6 +64,22 @@ uv run --with openpyxl python3 scripts/gen_excel.py mhcweb
 
 전체 911건 중 59.7%가 변경 없음, 34.9%가 코드 변경. 상세 분석은 [`현황_260225.md`](현황_260225.md) 참조.
 
+## 커밋 이력을 통한 비교 시점 추적
+
+모듈 비교가 완료될 때마다 해당 프로젝트 단위로 커밋을 남긴다. 커밋 메시지에 `[비교]` 태그를 사용하여 언제 어떤 프로젝트의 소스를 비교했는지 git log로 추적할 수 있다.
+
+```
+[비교] mhcweb
+[비교] mhcapp
+[비교] smhcweb
+[비교] smhcapp
+```
+
+```bash
+# 비교 이력 확인
+git log --oneline --grep="비교"
+```
+
 ## 관련 문서
 
 - [`CLAUDE.md`](CLAUDE.md) — Claude Code 작업 가이드
